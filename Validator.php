@@ -8,10 +8,9 @@ class Validator
 
     public $valid = true;
     public $result = null;
+    public $stop = false;
 
-    protected $stop = false;
-
-    private $defaultValue;
+    private $flags = array();
 
     public function __construct($func, $args){
         call_user_func_array(array($this, $func), $args);
@@ -26,23 +25,6 @@ class Validator
         return $this;
     }
 
-    public function not($chain){
-        $this->chain[] = array('action_not', $chain);
-        return $this;
-    }
-
-    public function incase(Validator $condition, Validator $true = null, Validator $false = null){
-        $this->chain[] = array('action_incase', array($condition, $true, $false));
-        return $this;
-    }
-
-    public function stop(){
-        $this->chain[] = array('action_stop', array());
-        return $this;
-    }
-
-
-
     public function run($data){
         $this->result = $data;
         foreach($this->chain as $v){
@@ -54,54 +36,40 @@ class Validator
     }
 
     private function makeRule($called, $args){
-        $func = substr($called, 3);
-        $type = substr($called, 0, 3);
-        if(!in_array($type, array('val', 'mod'))) throw new BadMethodCallException("Methods of type '$type' do not exist($func)");
-
-        // if(!in_array($called, $this->rulesSet)){
-            // throw new BadMethodCallException('Called an non-existing rule');
-            // return;
-        // }
-
-        return array('action_'.$type, new $func($args));
+        $preffix = substr($called, 0, 3);
+        if(in_array($preffix, array('val', 'mod'),true)){
+            $func = substr($called, 3);
+            return array("action_$preffix", new $func($args));
+        }else{
+            return array("action_struct", new $called($args));
+        }
     }
 
     private function action_val(Validatable $rule){
-            $this->_mergeValid($rule->val($this->result));
+        $this->_mergeValid($rule->val($this->result));
     }
 
     private function action_mod(Modifyable $rule){
         $this->result = $rule->mod($this->result);
     }
 
-    private function action_incase(array $args){
-        list($condition, $true, $false) = $args;
-
-        if($this->_subChain($condition)->valid){
-            $this->_subChain($true, true, true, true);
-        }else{
-            $this->_subChain($false, true, true, true);
-        }
-    }
-
-    private function action_not($chain){
-        $this->_mergeValid( ! $this->_subChain($chain, true, true, false)->valid);
-    }
-
-    private function action_stop(){
-        $this->stop = true;
+    private function action_struct(Structureable $rule){
+        $return = $rule->struct($this, $this->valid, $this->result, $this->stop);
+        list($valid, $result, $stop) = $return;
+        $this->_mergeValid($valid);
+        $this->_overwriteResult($result);
+        $this->_setStopFlag($stop);
     }
 
     private function _mergeValid($valid){
         $this->valid = $this->valid && $valid;
     }
 
-    private function _subChain(Validator $chain, $setStop = false, $setResult = false, $setValid = false){
-        $chain->run($this->result);
-        if($setResult) $this->result = $chain->result;
-        if($setValid) $this->_mergeValid($chain->valid);
-        if($setStop) $this->stop = $this->stop || $chain->stop;
-        return $chain;
+    private function _overwriteResult($result){
+        $this->result = $result;
     }
 
+    private function _setStopFlag($stop){
+        $this->stop = (bool)$stop;
+    }
 }

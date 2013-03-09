@@ -1,4 +1,4 @@
 ValSan
 ======
 
-A bunch of php that validate and sanitize input.
+A bunch of php that validates and sanitizes input.

@@ -2,11 +2,11 @@
 
 class incase extends AbstractStructure
 {
-    private $chain = null;
+    private $condition = null;
     private $true = null;
     private $false = null;
 
-    public function __construct($args){
+    public function init(array $args){
         if(!array_key_exists(0, $args)
         || !array_key_exists(1, $args)
         || !array_key_exists(2, $args)
@@ -14,22 +14,22 @@ class incase extends AbstractStructure
             throw new exception;
         }
 
-        $this->chain = $args[0];
+        $this->condition = $args[0];
         $this->true = $args[1];
         $this->false = $args[2];
     }
 
-    protected function run($caller){
-        if($this->chain->run($this->result)->valid){
+    protected function run(){
+        if($this->condition->with($this->value)->valid){
             if($this->true === null) return;
-            $subResult = $this->true->run($this->result);
+            $subResult = $this->true->with($this->value);
         }else{
             if($this->false === null) return;
-            $subResult = $this->false->run($this->result);
+            $subResult = $this->false->with($this->value);
         }
 
         $this->valid = $subResult->valid;
-        $this->result = $subResult->result;
+        $this->value = $subResult->value;
         $this->stop = $subResult->stop;
     }
 }

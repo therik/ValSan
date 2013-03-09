@@ -1,11 +1,11 @@
 <?php
 
-class Equals implements Validatable
+class Equals extends AbstractRule implements Validatable
 {
     private $equals;
     private $strict = false;
 
-    public function __construct($args){
+    public function init(array $args){
         if(count($args) <1 ) throw new BadMethodCallException('Missing parametter for Equals');
         $this->equals = $args[0];
         if(array_key_exists(1, $args)) $this->strict = $args[1];

@@ -3,13 +3,14 @@ use ValidatorInvoker as v;
 
 class stopTest extends PHPUnit_Framework_TestCase
 {
+
     public function testStop(){
-        $true = v::stop()->valFalse()->run('whatever')->valid;
+        $true = v::stop()->valFalse()->valid;
         $this->assertTrue($true);
-        $false = v::valFalse()->stop()->valTrue()->run('whatever')->valid;
+        $false = v::valFalse()->stop()->valTrue()->valid;
         $this->assertFalse($false);
 
-        $data = v::pass()->pass()->stop()->modRewrite('rewriten')->run('data')->result;
+        $data = v::with('data')->pass()->pass()->stop()->modRewrite('rewriten')->value;
         $this->assertSame('data', $data);
 
     }

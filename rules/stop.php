@@ -2,7 +2,11 @@
 
 class stop extends AbstractStructure
 {
-    protected function run($caller){
+    public function init(Array $args){
+
+    }
+
+    protected function run(){
         $this->stop = true;
     }
 }

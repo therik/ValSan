@@ -4,15 +4,19 @@ class not extends AbstractStructure
 {
     private $subchain;
 
-    public function __construct(array $args){
+    public function init(array $args){
         if(array_key_exists(0, $args)) $this->subchain = $args[0];
     }
 
-    protected function run($caller){
-        $this->subchain->run($this->result);
+    protected function run(){
+        $this->subchain->run($this->value);
 
         $this->valid = !$this->subchain->valid;
-        $this->result = $this->subchain->result;
+        $this->value = $this->subchain->value;
         $this->stop = $this->subchain->stop;
+    }
+
+    protected function runSubChain($chain){
+        $chain->passState($this->valid, $this->value, $this->stop);
     }
 }

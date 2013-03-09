@@ -1,10 +1,10 @@
 <?php
 
-class Rewrite implements Modifyable
+class Rewrite extends AbstractRule implements Modifyable
 {
     private $value;
 
-    public function __construct(array $args){
+    public function init(array $args){
         $this->value = $args[0];
     }
 

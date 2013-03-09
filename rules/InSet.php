@@ -1,10 +1,10 @@
 <?php
 
-class InSet implements Validatable
+class InSet extends AbstractRule implements Validatable
 {
     private $set;
 
-    public function __construct(array $args){
+    public function init(array $args){
         $this->set = $args;
     }
 

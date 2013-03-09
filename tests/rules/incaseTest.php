@@ -4,51 +4,47 @@ use ValidatorInvoker as v;
 class incaseTest extends PHPUnit_Framework_TestCase
 {
      public function testIncase(){
-        $first = v::incase(v::valTrue(), v::modRewrite('first'), v::pass())->run('whatever')->result;
+        $first = v::with('whatever')->incase(v::valTrue(), v::modRewrite('first'), v::pass())->value;
         $this->assertSame('first', $first);
 
-        $second = v::incase(v::valFalse(),null, v::modRewrite('second'))->run('whatever')->result;
+        $second = v::with('whatever')->incase(v::valFalse(),null, v::modRewrite('second'))->value;
         $this->assertSame('second', $second);
 
-        $first = v::
-            incase(
+        $first = v::with('whatever')
+            ->incase(
                 v::valTrue(),
                 v::modRewrite('first'),
                 v::modRewrite('second')
             )
-            ->run('whatever')
-            ->result;
+            ->value;
 
-        $second = v::
-            incase(
+        $second = v::with('whatever')
+            ->incase(
                 v::valFalse(),
                 v::modRewrite('first'),
                 v::modRewrite('second')
             )
-            ->run('whatever')
-            ->result;
+            ->value;
 
         $this->assertSame('first', $first);
         $this->assertSame('second', $second);
 
-        $first = v::
-            incase(
+        $first = v::with('whatever')
+            ->incase(
                 v::valTrue(),
                 v::modRewrite('first'),
                 v::modRewrite('second')
             )
             ->valEquals('second')
-            ->run('whatever')
             ->valid;
 
-        $second = v::
-            incase(
+        $second = v::with('whatever')
+            ->incase(
                 v::valFalse(),
                 v::modRewrite('first'),
                 v::modRewrite('second')
             )
             ->valEquals('second')
-            ->run('whatever')
             ->valid;
 
         $this->assertFalse($first);
@@ -62,6 +58,6 @@ class incaseTest extends PHPUnit_Framework_TestCase
     }
 
     public function testIncaseNoException(){
-        $will_NOT_fail = v::incase(v::pass(), null, null)->run('foobar');
+        $will_NOT_fail = v::incase(v::pass(), null, null)->run();
     }
 }

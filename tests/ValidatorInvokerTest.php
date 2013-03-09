@@ -14,7 +14,7 @@ class ValidatorInvokerTest extends PHPUnit_Framework_TestCase
     }
 
     public function testValidatInvoker(){
-        $val = v::valEquals('asd');
+        $val = v::pass();
         $this->assertInstanceOf('Validator', $val);
     }
 }

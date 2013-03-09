@@ -1,18 +1,24 @@
 <?php
-abstract class AbstractStructure implements Structureable
+abstract class AbstractStructure extends AbstractRule implements Structureable
 {
     protected $valid;
-    protected $result;
+    protected $value;
     protected $stop;
 
-    abstract protected function run($args);
+    abstract protected function run();
 
-    public final function struct(Validator $args, $valid, $result, $stop){
+    public final function struct($valid, $value, $stop){
         $this->valid = $valid;
-        $this->result = $result;
+        $this->value = $value;
         $this->stop = $stop;
 
-        $this->run($args);
-        return array($this->valid, $this->result, $this->stop);
+        $this->run();
+        return array($this->valid, $this->value, $this->stop);
+    }
+
+    protected function commitState(array $state){
+        if(array_key_exists('valid', $state)) $this->valid = $state['valid'];
+        if(array_key_exists('value', $state)) $this->value = $state['value'];
+        if(array_key_exists('stop', $state)) $this->stop = $state['stop'];
     }
 }

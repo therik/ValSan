@@ -21,12 +21,12 @@ class arrTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(), v::with(array())->arr()->value);
     }
 
-    public function testNotPassNonEmptyArray(){
+    public function testPassNonEmptyArray(){
         // $this->markTestIncomplete();
 
         $val = v::with(array('not empty'))->arr();
 
-        $this->assertFalse($val->valid);
+        $this->assertTrue($val->valid);
         $this->assertSame(array('not empty'), $val->value);
     }
 

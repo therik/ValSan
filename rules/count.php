@@ -3,9 +3,10 @@
 class count extends AbstractStructure implements InterfaceDataProvider
 {
     public $flag_pass_value = true;
-    protected $required_type = 'array';
+    protected $required_type = 'array-atribute';
 
     public function init(array $args){
+
     }
 
     public function run(){

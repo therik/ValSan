@@ -5,27 +5,25 @@ class countTest extends PHPUnit_Framework_TestCase
 {
 
     public function testCount(){
-        $this->markTestIncomplete();
+        // $this->markTestIncomplete();
         // $this->markTestSkipped();
         $true = v::with(array(1, 2))
-            ->arr(
-                v::count()->equals(2)
+            ->arr(v::count()->equals(2)
             )
             ->valid;
 
-        $false = v::with(array(1, 2, 3))
+        $this->assertTrue($true);
 
-        ->arr(
-            v::count()->equals(2)
+        $false = v::with(array(1, 2, 3))
+        ->arr(v::count()->equals(2)
         )
         ->valid;
 
-        $this->assertTrue($true);
         $this->assertFalse($false);
     }
 
     public function testCountShouldNotPassValue(){
-        $this->markTestIncomplete();
+        // $this->markTestIncomplete();
         // $this->markTestSkipped();
         $value = v::with(array(1, 2))
             ->arr(

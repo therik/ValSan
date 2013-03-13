@@ -5,6 +5,9 @@ class arr extends AbstractStructure
   // private $subchains = array();
   private $subchains = array();
 
+  private $contentSubchains = array();
+  private $atributeSubchains = array();
+
   protected $numRequiredArgs = 0;
 
   public $flag_pass_valid = true;
@@ -13,7 +16,7 @@ class arr extends AbstractStructure
 
   private $count = 0;
 
-  private $unsetAll;
+  private $unsetInvalid = false;
 
   public function init(array $args){
     foreach($args as $v){
@@ -23,7 +26,14 @@ class arr extends AbstractStructure
 
       if(! $v->chainIsOfType('array')) throw new ChainException('arr only accepts array-type-validator subchains');
 
-      $this->subchains[] = $this->extractChain($v);
+      if($v->chainIsOfType('array-content')){
+        $this->contentSubchains[] = $this->extractChain($v);
+      }elseif($v->chainIsOfType('array-atribute')){
+        $this->atributeSubchains[] = $this->extractChain($v);
+      }else{
+        $this->subchains[] = $this->extractChain($v);
+      }
+
     }
   }
 
@@ -35,42 +45,43 @@ class arr extends AbstractStructure
 
     $this->count = count($this->value);
 
-    foreach($this->value as $key => $value){
-      foreach($this->subchains as $sch){
-        $sch->value = $value;
-        $sch->evaluateChain('arr', array('obj' => $this, 'key' => $key, 'count' => $this->count));
-
-        if($sch->isOfType('array-content')){
-          if($sch->stop === true) continue;
-          else{
-
-            $paramGrp = $sch->getParameterGroup('arr');
-
-            if(array_key_exists('unset', $paramGrp) && $paramGrp['unset'] === true) {
-              unset($this->value[$key]);
-            }else{
-              $this->valid = ($this->valid && $sch->valid);
-            }
-
-            break 2;
-          }
-
-        }elseif($sch->isOfType('array-atribute')){
-          //+++++++++++++
-          // to do...
-        }else{
-          $this->valid = ($this->valid && $sch->valid);
-        }
-      }
-
-      // if we passed through all rules
-      // and didn't find array-content rule that matched (didn't stop),
-      // delete entry from array
-
-      $this->valid = false;
-      if($this->unsetAll){
-        // unset($this->value[$key]);
-      }
+    foreach($this->atributeSubchains as $v){
+      // var_dump($v->evaluateChain('arr', array('obj' => $this, 'count' => $this->count))->valid);
+      $this->valid = $this->valid && $v->evaluateChain('arr', array('obj' => $this, 'count' => $this->count))->valid;
     }
+
+    foreach($this->value as $key => $value){
+      $matched = $this->matchItem($key, $value);
+    }
+
+
+  }
+
+  private function matchItem($key, $value){
+    foreach($this->contentSubchains as $sch){
+      $sch->value = $value;
+      $sch->evaluateChain('arr', array('obj' => $this, 'key' => $key, 'count' => $this->count));
+      if($sch->stop === true) continue;
+
+      $paramGrp = $sch->getParameterGroup('arr');
+
+      if(array_key_exists('unset', $paramGrp) && $paramGrp['unset'] === true) {
+        unset($this->value[$key]);
+      }else{
+        $this->valid = ($this->valid && $sch->valid);
+      }
+
+      return;
+    }
+
+    // if we passed through all rules
+    // and didn't find array-content rule that matched (didn't stop),
+    // delete entry from array
+
+    // $this->valid = false;
+    if($this->unsetInvalid){
+      unset($this->value[$key]);
+    }
+
   }
 }

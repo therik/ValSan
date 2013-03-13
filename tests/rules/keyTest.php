@@ -12,16 +12,17 @@ class keyTest extends PHPUnit_Framework_TestCase
             );
         $this->assertSame(array('key' => 'value'), $val1->value);
         $this->assertTrue($val1->valid);
+    }
 
-        $val2 = v::
-            with(array('wrong_key' => 'value'))
-            ->arr(v::key(v::same('key'))
-            );
+    public function testNotPassAnything(){
+        $v = v::
+            with(array('anykey' => 'value'))
+            ->arr(v::key()->false());
 
-        $this->assertFalse($val2->valid);
+        $this->assertFalse($v->valid);
 
         // should not change value
-        $this->assertSame(array('wrong_key' => 'value'), $val2->value);
+        $this->assertSame(array('anykey' => 'value'), $v->value);
     }
 
 
@@ -29,15 +30,14 @@ class keyTest extends PHPUnit_Framework_TestCase
         // $this->markTestIncomplete();
         // $this->markTestSkipped();
         $true = v::with(array('validKey' => 'whatever'))
-            ->arr(
-                v::key(v::same('validKey'))
+            ->arr(v::key(v::same('validKey'),
+                  v::key()->false())
             )
             ->valid;
 
         $false = v::with(array('invalid' => 'whatever'))
-            ->arr(
-                v::key(v::same('validKey'))
-            )
+            ->arr(v::key(v::same('validKey')),
+                  v::key()->false())
             ->valid;
 
         $this->assertTrue($true);
@@ -66,6 +66,5 @@ class keyTest extends PHPUnit_Framework_TestCase
 
         $this->assertArrayHasKey('unchanged', $array->value);
     }
-
 
 }

@@ -9,16 +9,25 @@ class key extends AbstractStructure
     protected $required_type = 'array-content';
 
     public function init(array $args){
-        if(array_key_exists(0, $args)
-        && $args[0] INSTANCEOF Validator){
-            $this->subchain = $this->extractChain($args[0]);
+        if(array_key_exists(0, $args)){
+            if($args[0] INSTANCEOF Validator){
+                $this->subchain = $this->extractChain($args[0]);
+            }elseif($args[0] === null){
+                $this->subchain = new Chain;
+            }
+        }else{
+            $this->subchain = new Chain;
         }
+
+
     }
 
     public function run(){
         $paramGrp = $this->chain->getParameterGroup('arr');
 
-        $this->subchain->value = $paramGrp['key'];
+        $sc = $this->subchain;
+
+        $sc->value = $paramGrp['key'];
 
         $this->subchain->evaluateChain();
 

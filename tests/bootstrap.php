@@ -1,25 +1,31 @@
 <?php
-include '../Ruleable.php';
-include '../Structureable.php';
-include '../Validatable.php';
-include '../Modifyable.php';
-include '../Dataswapperable.php';
+include 'rules/InterfaceRule.php';
+include 'rules/InterfaceStructure.php';
+include 'rules/InterfaceValidator.php';
+include 'rules/InterfaceModifier.php';
+include 'rules/InterfaceDataProvider.php';
 
-include '../rules/AbstractRule.php';
-include '../rules/AbstractStructure.php';
+include 'rules/AbstractRule.php';
+include 'rules/AbstractStructure.php';
 
-include '../Validator.php';
-include '../ValidatorInvoker.php';
+include 'Chain.php';
+include 'ValidatorInvoker.php';
+include 'Validator.php';
 
 
-include '../rules/Equals.php';
-include '../rules/True.php';
-include '../rules/False.php';
-include '../rules/Rewrite.php';
-include '../rules/InSet.php';
-include '../rules/not.php';
-include '../rules/Preg.php';
-include '../rules/stop.php';
-include '../rules/incase.php';
-include '../rules/count.php';
-include '../rules/arr.php';
+include 'rules/equals.php';
+include 'rules/same.php';
+include 'rules/true.php';
+include 'rules/false.php';
+include 'rules/rewrite.php';
+include 'rules/oneOf.php';
+include 'rules/not.php';
+include 'rules/pregMatch.php';
+include 'rules/stop.php';
+include 'rules/incase.php';
+include 'rules/arr.php';
+include 'rules/count.php';
+include 'rules/key.php';
+
+
+include "exceptions/ChainException.php";

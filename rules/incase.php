@@ -6,11 +6,17 @@ class incase extends AbstractStructure
     private $true = null;
     private $false = null;
 
+    public $flag_pass_valid = true;
+    public $flag_pass_value = true;
+    public $flag_pass_stop = true;
+
+    protected $numRequiredArgs = 2;
+
     public function init(array $args){
-        if(!array_key_exists(0, $args)
-        || !array_key_exists(1, $args)
-        || !array_key_exists(2, $args)
-        || !$args[0] INSTANCEOF Validator){
+        if(!$args[0] INSTANCEOF Validator
+        || (!$args[1] INSTANCEOF Validator && $args[1] !== null)
+        || (!$args[2] INSTANCEOF Validator && $args[2] !== null)
+        ){
             throw new exception;
         }
 
@@ -20,14 +26,13 @@ class incase extends AbstractStructure
     }
 
     protected function run(){
-        if($this->condition->with($this->value)->valid){
+        if($this->prepareSubChain($this->extractChain($this->condition))->evaluateChain()->valid){
             if($this->true === null) return;
-            $subResult = $this->true->with($this->value);
+            $subResult = $this->prepareSubChain($this->extractChain($this->true))->evaluateChain();
         }else{
             if($this->false === null) return;
-            $subResult = $this->false->with($this->value);
+            $subResult = $this->prepareSubChain($this->extractChain($this->false))->evaluateChain();
         }
-
         $this->valid = $subResult->valid;
         $this->value = $subResult->value;
         $this->stop = $subResult->stop;

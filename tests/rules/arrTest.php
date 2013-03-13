@@ -3,39 +3,32 @@ use ValidatorInvoker as v;
 
 class arrTest extends PHPUnit_Framework_TestCase
 {
-    public function testCount(){
-        // $this->markTestSkipped();
-        $true = v::with(array(1, 2))
-            ->arr(
-                v::count()->valEquals(2)
-            )
-            ->valid;
-
-        $false = v::with(array(1, 2, 3))
-        ->arr(
-            v::count()->valEquals(2)
-        )
-        ->valid;
-
-        $this->assertTrue($true);
-        $this->assertFalse($false);
+    public function testOnlyArrayValid(){
+        // $this->markTestIncomplete();
+        $this->assertTrue(v::with(array())->arr()->valid);
+        $this->assertFalse(v::with(null)->arr()->valid);
+        $this->assertFalse(v::with(true)->arr()->valid);
+        $this->assertFalse(v::with(false)->arr()->valid);
+        $this->assertFalse(v::with('string')->arr()->valid);
+        $this->assertFalse(v::with(new stdClass)->arr()->valid);
+        $this->assertFalse(v::with(2.25)->arr()->valid);
+        $this->assertFalse(v::with(15)->arr()->valid);
+        $this->assertFalse(v::with(NAN)->arr()->valid);
     }
 
-    public function testKey(){
-        $this->markTestSkipped();
-        $true = v::with(array('validKey' => 'whatever'))
-            ->arr(
-                v::key()->valEquals('validKey')
-            )
-            ->valid;
-
-        $false = v::with(array('invalid' => 'whatever'))
-            ->arr(
-                v::key()->valEquals('validKey')
-            )
-            ->valid;
-
-        $this->assertTrue($true);
-        $this->assertFalse($false);
+    public function testPassEmptyArray(){
+        // $this->markTestIncomplete();
+        $this->assertSame(array(), v::with(array())->arr()->value);
     }
+
+    public function testNotPassNonEmptyArray(){
+        // $this->markTestIncomplete();
+
+        $val = v::with(array('not empty'))->arr();
+
+        $this->assertFalse($val->valid);
+        $this->assertSame(array('not empty'), $val->value);
+    }
+
+
 }

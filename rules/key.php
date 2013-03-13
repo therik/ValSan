@@ -1,23 +1,27 @@
 <?php
 
-class key extends AbstractStructure implements Dataswapperable
+class key extends AbstractStructure
 {
-    private $chain;
+    private $subchain;
+
+    public $flag_pass_stop = true;
+
+    protected $required_type = 'array-content';
 
     public function init(array $args){
-        $this->chain = $args[0];
-        if($this->chain->getType('array_content'))
-            throw new exception('cannot add count into content chain');
-
-        // $this->chain->disablePassValue();
-        // $this->chain->disablePassStop();
-        // $this->chain->disableDataSwap();
-        // $this->chain->disableModifyable();
-        $this->chain->addType('array_content');
+        if(array_key_exists(0, $args)
+        && $args[0] INSTANCEOF Validator){
+            $this->subchain = $this->extractChain($args[0]);
+        }
     }
 
     public function run(){
-        $this->value = $this->chain->getAttribute('array_keys');
+        $paramGrp = $this->chain->getParameterGroup('arr');
 
+        $this->subchain->value = $paramGrp['key'];
+
+        $this->subchain->evaluateChain();
+
+        if(!$this->subchain->valid) $this->stop = true;
     }
 }

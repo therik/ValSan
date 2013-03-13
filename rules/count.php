@@ -1,19 +1,15 @@
 <?php
 
-class count extends AbstractStructure implements Dataswapperable
+class count extends AbstractStructure implements InterfaceDataProvider
 {
-    public function init(array $args){
-        if($this->chain->getType('array_content'))
-            throw new exception('cannot add count into content chain');
+    public $flag_pass_value = true;
+    protected $required_type = 'array';
 
-        $this->chain->disablePassValue();
-        $this->chain->disableDataSwap();
-        $this->chain->disablePassStop();
-        $this->chain->disableModifyable();
-        $this->chain->addType('array_atribute');
+    public function init(array $args){
     }
 
     public function run(){
-        $this->value = $this->chain->getAttribute('array_length');
+        $paramGrp = $this->chain->getParameterGroup('arr');
+        $this->value = $paramGrp['count'];
     }
 }

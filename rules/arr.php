@@ -2,42 +2,75 @@
 
 class arr extends AbstractStructure
 {
-    // private $subchains = array();
-    private $attribute_chains = array();
-    private $content_chains = array();
+  // private $subchains = array();
+  private $subchains = array();
 
+  protected $numRequiredArgs = 0;
 
-    public function init(array $args){
-        foreach($args as $v){
-            if(! $v INSTANCEOF Validator){
-                throw new exception('all arr() parametters must be validators');
-            }
+  public $flag_pass_valid = true;
+  public $flag_pass_value = true;
+  public $flag_pass_stop = false;
 
-            if($v->getType('array_atribute')){
-                $this->attribute_chains[] = $v;
-            }elseif($v->getType('array_content')){
-                $this->content_chains[] = $v;
+  private $count = 0;
+
+  private $unsetAll;
+
+  public function init(array $args){
+    foreach($args as $v){
+      if(! $v INSTANCEOF Validator){
+        throw new exception('all arr() parameters must be validators');
+      }
+
+      if(! $v->chainIsOfType('array')) throw new ChainException('arr only accepts array-type-validator subchains');
+
+      $this->subchains[] = $this->extractChain($v);
+    }
+  }
+
+  public function run(){
+    if(!is_array($this->value)){
+      $this->valid = false;
+      return;
+    }
+
+    $this->count = count($this->value);
+
+    foreach($this->value as $key => $value){
+      foreach($this->subchains as $sch){
+        $sch->value = $value;
+        $sch->evaluateChain('arr', array('obj' => $this, 'key' => $key, 'count' => $this->count));
+
+        if($sch->isOfType('array-content')){
+          if($sch->stop === true) continue;
+          else{
+
+            $paramGrp = $sch->getParameterGroup('arr');
+
+            if(array_key_exists('unset', $paramGrp) && $paramGrp['unset'] === true) {
+              unset($this->value[$key]);
             }else{
-                throw new exception('wrong chain in arr structure');
+              $this->valid = ($this->valid && $sch->valid);
             }
+
+            break 2;
+          }
+
+        }elseif($sch->isOfType('array-atribute')){
+          //+++++++++++++
+          // to do...
+        }else{
+          $this->valid = ($this->valid && $sch->valid);
         }
+      }
 
+      // if we passed through all rules
+      // and didn't find array-content rule that matched (didn't stop),
+      // delete entry from array
 
-        // $this->subchains = $args;
+      $this->valid = false;
+      if($this->unsetAll){
+        // unset($this->value[$key]);
+      }
     }
-
-    public function run(){
-        if(!is_array($this->value)){
-            $this->valid = false;
-            $this->stop = true;
-            $this->value = null;
-        }
-
-        $attributes = array('array_length' => count($this->value));
-
-        foreach($this->attribute_chains as $v){
-            $chain = $v->passAttributes($attributes)->run();
-            $this->commitState($chain->getState());
-        }
-    }
+  }
 }

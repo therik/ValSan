@@ -1,24 +1,16 @@
 <?php
-abstract class AbstractStructure extends AbstractRule implements Structureable
+// use Validator;
+abstract class AbstractStructure extends AbstractRule implements InterfaceStructure
 {
-    protected $valid;
-    protected $value;
-    protected $stop;
-
-    abstract protected function run();
-
-    public final function struct($valid, $value, $stop){
-        $this->valid = $valid;
-        $this->value = $value;
-        $this->stop = $stop;
-
-        $this->run();
-        return array($this->valid, $this->value, $this->stop);
+    protected function extractChain(Validator $val){
+        return Validator::getChainObject($val);
     }
 
-    protected function commitState(array $state){
-        if(array_key_exists('valid', $state)) $this->valid = $state['valid'];
-        if(array_key_exists('value', $state)) $this->value = $state['value'];
-        if(array_key_exists('stop', $state)) $this->stop = $state['stop'];
+    public function prepareSubChain(Chain $subChain){
+        return $this->chain->makeSubChain($subChain);
     }
+
+
+
+
 }

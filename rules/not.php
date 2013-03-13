@@ -2,21 +2,24 @@
 
 class not extends AbstractStructure
 {
-    private $subchain;
+    private $subValidator;
+
+    protected $numRequiredArgs = 1;
+
+    public $flag_pass_valid = true;
+    public $flag_pass_value = true;
+    public $flag_pass_stop = true;
 
     public function init(array $args){
-        if(array_key_exists(0, $args)) $this->subchain = $args[0];
+        $this->subValidator = $args[0];
     }
 
     protected function run(){
-        $this->subchain->run($this->value);
+        $subChain = $this->prepareSubChain($this->extractChain($this->subValidator))->evaluateChain();
 
-        $this->valid = !$this->subchain->valid;
-        $this->value = $this->subchain->value;
-        $this->stop = $this->subchain->stop;
-    }
-
-    protected function runSubChain($chain){
-        $chain->passState($this->valid, $this->value, $this->stop);
+        $this->valid = !$subChain->valid;
+        $this->value = $subChain->value;
+        $this->stop = $subChain->stop;
     }
 }
+

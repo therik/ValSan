@@ -5,12 +5,12 @@ class stopTest extends PHPUnit_Framework_TestCase
 {
 
     public function testStop(){
-        $true = v::stop()->valFalse()->valid;
+        $true = v::stop()->false()->valid;
         $this->assertTrue($true);
-        $false = v::valFalse()->stop()->valTrue()->valid;
+        $false = v::false()->stop()->true()->valid;
         $this->assertFalse($false);
 
-        $data = v::with('data')->pass()->pass()->stop()->modRewrite('rewriten')->value;
+        $data = v::with('data')->pass()->pass()->stop()->rewrite('rewriten')->value;
         $this->assertSame('data', $data);
 
     }

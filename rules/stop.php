@@ -2,8 +2,9 @@
 
 class stop extends AbstractStructure
 {
-    public function init(Array $args){
+    public $flag_pass_stop = true;
 
+    public function init(Array $args){
     }
 
     protected function run(){

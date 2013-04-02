@@ -129,7 +129,7 @@ v::incase(chain $condition, chain $trueChain, chain $falseChain)
 ```
 sort of like ternary if, or rather like 'if' in regular expressions:
 
-if ```php $condition->valid``` is true, evaluation continues through $trueChain, $falseChain otherwise 
+if ```$condition->valid``` is true, evaluation continues through $trueChain, $falseChain otherwise 
 
 note: $condition subchain doesn't return any result values or $stop flag, nor it changes anything back in main chain. 
 
@@ -158,7 +158,9 @@ $val->value // 'woman'
 ```
 
 ###stop###
-```php v::stop()```
+```php
+v::stop()
+```
 rule that immediately stopps current evaluation
 
 examples:
@@ -182,4 +184,4 @@ note: if the stop() is in condition subchain of incase, it doesn't stop the whol
 
 The idea was to make ordered list of possible subchain rules that can attempt to match the key+value in specified order, sort of like iptables or apaches mod_rewrite rules work.
 First subchain that matches the key-value twin has the right to do whatever it wants to do with it. (change value, remove from array, etc..)
-but, that's still messy now, check tests of arr, key and count rules out to see what's in there...
+but, that's still messy now, check tests of arr, key and count rules to see what's there...

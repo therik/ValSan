@@ -98,7 +98,7 @@ Chain reuse behavior explanation:
 ```
 
 
-RULES
+Strange rules
 -----
 ###not###
 ```php

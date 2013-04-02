@@ -180,6 +180,6 @@ note: if the stop() is in condition subchain of incase, it doesn't stop the whol
 ###Array rules###
 ####are pretty much mess right now####
 
-The idea was to make ordered list of possible subchain rules that can attempt to match the key value in specified order, sort of like iptables or apaches mod_rewrite rules work.
+The idea was to make ordered list of possible subchain rules that can attempt to match the key+value in specified order, sort of like iptables or apaches mod_rewrite rules work.
 First subchain that matches the key-value twin has the right to do whatever it wants to do with it. (change value, remove from array, etc..)
 but, that's still messy now, check tests of arr, key and count rules to see what's there...

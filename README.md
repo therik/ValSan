@@ -144,7 +144,7 @@ another example:
 ```php
 $val = v::incase(v::oneOf('man', 'woman', 'child'),
                  v::pass(),
-                 v::rewrite('unspecified')->false() // note: false() must be specified because condition doesn't pass any values to mainchain
+                 v::rewrite('unspecified')->false() // note: false() must be used because condition doesn't pass any values to mainchain
                  );
 
 $val->with('man')->valid // true

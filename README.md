@@ -8,7 +8,7 @@ A bunch of php that validates and sanitizes input.
 usage v-double-colon:
 `use ValidatorInvoker as v;
 v::pass();
-``
+`
 
 Validator properties
 `$valid // true if evaluated chain is valid (if all validations were valid)
@@ -138,8 +138,8 @@ examples:
 
 v::with('asd')->incase(v::true(), v::stop() v::pass())->rewrite('bbbbb')->value // 'asd' (chain stooped in incase's true-subchain)
 `
-note: if the stop() in condition subchain of incase, it doesn't stop the whole chain, just the condition branch
 
+note: if the stop() in condition subchain of incase, it doesn't stop the whole chain, just the condition branch
 
 Array rules:
 are pretty much mess right now

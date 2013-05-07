@@ -3,7 +3,12 @@ ValSan
 
 A bunch of php that validates and sanitizes input.
 
+NOTE: This is just a proposition and testing of new features and ideas for https://github.com/Respect/Validation
+This project alone doesn't work and never will. Don't try to use it :) 
 
+
+BUG:
+$valid in chain is wrong: $valid property of later chain members overwrites previous $valid, instead of ANDing itself to it
 
 ####usage v-double-colon:####
 ```php
